@@ -5,7 +5,7 @@ require "open3"
 require "fileutils"
 
 module QasaOpencode
-  VERSION = "0.1.0"
+  VERSION = "0.2.0"
   WORKSPACE_DIR = File.expand_path("~/qasa-workspace")
   CONFIG_PATH = File.expand_path("~/.qasa-opencode.yml")
 
