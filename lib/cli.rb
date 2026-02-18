@@ -31,8 +31,8 @@ module QasaOpencode
         check("repo #{name} cloned") { Dir.exist?(path) }
       end
 
-      skills_dir = File.join(QasaOpencode::WORKSPACE_DIR, ".opencode", "skills")
-      check("skills installed") { Dir.exist?(skills_dir) && !Dir.glob("#{skills_dir}/*.md").empty? }
+      agent_file = File.join(QasaOpencode::WORKSPACE_DIR, "agent", "logic-explorer.md")
+      check("read-only agent installed") { File.exist?(agent_file) }
 
       config = Config.new
       check("setup marked complete") { config.setup_complete? }
@@ -84,9 +84,6 @@ module QasaOpencode
 
       installer.clone_repos!(repos)
 
-      skills = Skills.new
-      skills.install!
-
       config.mark_setup_complete!
       config.touch_last_run!
 
@@ -128,7 +125,8 @@ module QasaOpencode
       launcher = Launcher.new
       launcher.pull_repos!
 
-      Skills.new.install!
+      # Re-install agent template in case it was updated
+      Workspace.new.install_agent!
 
       config.touch_last_run!
 

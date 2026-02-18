@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "qasa-opencode"
-  spec.version = "0.3.0"
+  spec.version = "0.4.0"
   spec.authors = ["Qasa"]
   spec.summary = "Read-only OpenCode wrapper for Qasa business staff"
   spec.description = "CLI tool that wraps OpenCode to give non-technical staff safe, read-only access to query business logic across frontend and backend repos."

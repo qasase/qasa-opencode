@@ -5,7 +5,7 @@ require "open3"
 require "fileutils"
 
 module QasaOpencode
-  VERSION = "0.3.0"
+  VERSION = "0.4.0"
   WORKSPACE_DIR = File.expand_path("~/qasa-workspace")
   CONFIG_PATH = File.expand_path("~/.qasa-opencode.yml")
 
@@ -20,6 +20,5 @@ end
 require_relative "config"
 require_relative "installer"
 require_relative "workspace"
-require_relative "skills"
 require_relative "launcher"
 require_relative "cli"
