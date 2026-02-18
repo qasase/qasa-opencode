@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 # Flag rejection — block dangerous flags before Thor processes them
-BLOCKED_FLAGS = %w[--write --unsafe --exec --eval --no-read-only].freeze
+BLOCKED_FLAGS = %w[--write --unsafe --exec --eval --agent].freeze
 
 ARGV.each do |arg|
   if BLOCKED_FLAGS.include?(arg.downcase)

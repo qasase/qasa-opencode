@@ -18,6 +18,7 @@ module QasaOpencode
     def setup!
       create_directories!
       write_context!
+      install_agent!
     end
 
     private
@@ -27,11 +28,19 @@ module QasaOpencode
         QasaOpencode::WORKSPACE_DIR,
         File.join(QasaOpencode::WORKSPACE_DIR, ".opencode"),
         File.join(QasaOpencode::WORKSPACE_DIR, ".opencode", "skills"),
-        File.join(QasaOpencode::WORKSPACE_DIR, ".qasa")
+        File.join(QasaOpencode::WORKSPACE_DIR, ".qasa"),
+        File.join(QasaOpencode::WORKSPACE_DIR, "agent")
       ].each do |dir|
         FileUtils.mkdir_p(dir)
         puts "Created #{dir}"
       end
+    end
+
+    def install_agent!
+      src = File.join(QasaOpencode::GEM_ROOT, "templates", "agent", "logic-explorer.md")
+      dest = File.join(QasaOpencode::WORKSPACE_DIR, "agent", "logic-explorer.md")
+      FileUtils.cp(src, dest)
+      puts "Installed read-only agent: logic-explorer"
     end
 
     def write_context!

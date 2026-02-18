@@ -5,7 +5,7 @@ module QasaOpencode
     def launch!
       Dir.chdir(QasaOpencode::WORKSPACE_DIR) do
         puts "Launching OpenCode in read-only mode..."
-        exec("opencode", "--read-only")
+        exec("opencode", "--agent", "logic-explorer")
       end
     end
 
