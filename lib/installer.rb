@@ -19,20 +19,20 @@ module QasaOpencode
       puts "Authentication successful."
     end
 
-    def clone_repos!
-      QasaOpencode.repos.each do |name, repo|
+    def clone_repos!(repos)
+      repos.each do |name, url|
         target = File.join(QasaOpencode::WORKSPACE_DIR, name.to_s)
         if Dir.exist?(target)
           puts "Repo #{name} already cloned at #{target}, skipping."
           next
         end
 
-        puts "Cloning #{repo} into #{target}..."
-        output, status = Open3.capture2e("git", "clone", "git@github.com:#{repo}.git", target)
+        puts "Cloning #{name} into #{target}..."
+        output, status = Open3.capture2e("git", "clone", url, target)
         unless status.success?
-          abort "Error: Failed to clone #{repo}.\n#{output}"
+          abort "Error: Failed to clone #{name}.\n#{output}"
         end
-        puts "Cloned #{repo} successfully."
+        puts "Cloned #{name} successfully."
       end
     end
   end

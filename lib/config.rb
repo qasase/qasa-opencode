@@ -5,7 +5,8 @@ module QasaOpencode
     DEFAULTS = {
       "setup_complete" => false,
       "workspace_path" => QasaOpencode::WORKSPACE_DIR,
-      "last_run" => nil
+      "last_run" => nil,
+      "repos" => {}
     }.freeze
 
     attr_reader :data
