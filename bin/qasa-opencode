@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Flag rejection — block dangerous flags before Thor processes them
+BLOCKED_FLAGS = %w[--write --unsafe --exec --eval --no-read-only].freeze
+
+ARGV.each do |arg|
+  if BLOCKED_FLAGS.include?(arg.downcase)
+    $stderr.puts "Error: flag '#{arg}' is not allowed. qasa-opencode runs in read-only mode only."
+    exit 1
+  end
+end
+
+require_relative "../lib/qasa_opencode"
+
+QasaOpencode::CLI.start(ARGV)
