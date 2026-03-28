@@ -1,19 +1,10 @@
 # frozen_string_literal: true
 
-module QasaOpencode
+module QasaCodeagent
   class Workspace
-    CONTEXT_TEMPLATE = <<~MARKDOWN
-      # Workspace
-
-      This workspace contains the project repositories.
-      It is configured for **read-only** analysis via OpenCode.
-
-      ## Rules
-
-      - All queries are read-only. No code modifications are permitted.
-      - Use the provided skills for SQL analysis, business logic review, and code exploration.
-      - When querying databases, use SELECT statements only.
-    MARKDOWN
+    def initialize(agent)
+      @agent = agent
+    end
 
     def setup!
       create_directories!
@@ -22,21 +13,15 @@ module QasaOpencode
     end
 
     def install_agent!
-      src = File.join(QasaOpencode::GEM_ROOT, "templates", "agent", "logic-explorer.md")
-      dest_dir = File.join(QasaOpencode::WORKSPACE_DIR, "agent")
-      FileUtils.mkdir_p(dest_dir)
-      FileUtils.cp(src, File.join(dest_dir, "logic-explorer.md"))
-      puts "Installed read-only agent: logic-explorer"
+      @agent.install_templates!(QasaCodeagent::WORKSPACE_DIR, QasaCodeagent::GEM_ROOT)
     end
 
     private
 
     def create_directories!
       [
-        QasaOpencode::WORKSPACE_DIR,
-        File.join(QasaOpencode::WORKSPACE_DIR, ".opencode"),
-        File.join(QasaOpencode::WORKSPACE_DIR, ".qasa"),
-        File.join(QasaOpencode::WORKSPACE_DIR, "agent")
+        QasaCodeagent::WORKSPACE_DIR,
+        File.join(QasaCodeagent::WORKSPACE_DIR, ".qasa")
       ].each do |dir|
         FileUtils.mkdir_p(dir)
         puts "Created #{dir}"
@@ -44,9 +29,10 @@ module QasaOpencode
     end
 
     def write_context!
-      path = File.join(QasaOpencode::WORKSPACE_DIR, "context.md")
-      File.write(path, CONTEXT_TEMPLATE)
-      puts "Wrote context file to #{path}"
+      src = File.join(QasaCodeagent::GEM_ROOT, "templates", "shared", "context.md")
+      dest = File.join(QasaCodeagent::WORKSPACE_DIR, "context.md")
+      FileUtils.cp(src, dest)
+      puts "Wrote context file to #{dest}"
     end
   end
 end

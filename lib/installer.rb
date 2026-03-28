@@ -1,27 +1,14 @@
 # frozen_string_literal: true
 
-module QasaOpencode
+module QasaCodeagent
   class Installer
-    def ensure_opencode!
-      output, status = Open3.capture2e("which opencode")
-      unless status.success?
-        abort "Error: opencode is not installed. Install it first: https://opencode.ai"
-      end
-      puts "Found opencode at #{output.strip}"
-    end
-
-    def authenticate!
-      puts "Authenticating with OpenCode..."
-      output, status = Open3.capture2e("opencode auth login")
-      unless status.success?
-        abort "Error: OpenCode authentication failed.\n#{output}"
-      end
-      puts "Authentication successful."
+    def ensure_agent!(agent)
+      agent.check_installed!
     end
 
     def clone_repos!(repos)
       repos.each do |name, url|
-        target = File.join(QasaOpencode::WORKSPACE_DIR, name.to_s)
+        target = File.join(QasaCodeagent::WORKSPACE_DIR, name.to_s)
         if Dir.exist?(target)
           puts "Repo #{name} already cloned at #{target}, skipping."
           next
@@ -30,6 +17,20 @@ module QasaOpencode
         puts "Cloning #{name} into #{target}..."
         output, status = Open3.capture2e("git", "clone", url, target)
         unless status.success?
+          if SshHelper.ssh_url?(url) && output.include?("Permission denied")
+            puts "Clone failed due to SSH authentication.\n\n"
+            SshHelper.ensure_access!(url)
+
+            # Retry once after SSH setup
+            puts "\nRetrying clone for #{name}..."
+            output, status = Open3.capture2e("git", "clone", url, target)
+            unless status.success?
+              abort "Error: Failed to clone #{name} after SSH setup.\n#{output}\n\nAsk a developer on your team for help."
+            end
+            puts "Cloned #{name} successfully."
+            next
+          end
+
           abort "Error: Failed to clone #{name}.\n#{output}"
         end
         puts "Cloned #{name} successfully."
